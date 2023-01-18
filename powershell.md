@@ -74,7 +74,7 @@ PS C:\> echo $env:PROCESSOR_ARCHITECTURE
 PS C:\Users> Select-String -path c:\users\*.txt -pattern password
 --> search through .txt files in c:\users to find all files that contain the word "password"(case-insensitive)
 
-PS C:\Users> ls -r c:\users | % {Select-String -path $_  -pattern nspn} 2>$null
+PS C:\Users> ls -r c:\users | % {Select-String -path $_  -pattern password} 2>$null
 --> Recurse through c:\users to find all files that contain the word "password"
 ```
 ## Counting loops
