@@ -7,3 +7,4 @@ _Notes_ _From_ _the_ _Underground_
 
 # [Introduction to Windows Powershell](./powershell.html)
 
+# [Pivoting](./pivot.html)
