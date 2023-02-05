@@ -6,8 +6,8 @@ layout: default
 Pivoting is the art of using access obtained over one machine to exploit another machine deeper in to the network
 
 Two Main method to do pivioting ;:
-→ Tunneling/proxying → creating a proxy type connection through a compromised machine in order to route all desired traffic in to the targeted system.This could also be tunnelled inside another protocole (eg SSH tunnelling), which can be useful to evade basic IDS or firewall.
-→ Port Forwarding → Creating a connection between a local port and single port on a target via compromised host.
+* Tunneling/proxying → creating a proxy type connection through a compromised machine in order to route all desired traffic in to the targeted system.This could also be tunnelled inside another protocole (eg SSH tunnelling), which can be useful to evade basic IDS or firewall.
+* Port Forwarding → Creating a connection between a local port and single port on a target via compromised host.
 
 Proxy is good if we want to redirect lots of different kind of traffic into our target network (example nmap scan)
 Port forwading is faster and reliable but only allows us to access single port on a target device
@@ -15,15 +15,15 @@ Port forwading is faster and reliable but only allows us to access single port o
 ## ProxyChains,FoxyProxy
 
 In /etc/proxychains.conf comment out the proxy_dns line which can cause a scan to hang and ultimately crash
-→ We can only use TCP scans -- so no UDP or SYN scans. ICMP echo packets will also not work through the proxy, so use -Pn switch
-→ It will be extremely slow. 
+* We can only use TCP scans -- so no UDP or SYN scans. ICMP echo packets will also not work through the proxy, so use -Pn switch
+* It will be extremely slow. 
 
 ## SSH Tunneling
 
 Forward Connections → It is done when we have ssh access to the target
 
 There are two ways to do it ::
-1) → Port Forwading → it is done using -L switch which creates a link to a local port.
+1. → Port Forwading → it is done using -L switch which creates a link to a local port.
 ```
 Example :: 
 ssh access server → 172.16.0.5
@@ -33,13 +33,13 @@ Command → ssh -L 8000:172.16.0.10:80 user@172.16.0.5 -fN
 ```
 We could then access the website on 172.16.0.10 (through 172.16.0.5) by navigating to port 8000 on our own attacking machine (localhost:8000).
 
-2) → Proxies → Proxies are made using the -D switch 
+2. → Proxies → Proxies are made using the -D switch 
 ```
 Example :: 
 -D 1337 → This will open up port 1337 on our attacking box as a proxy to send data through in to the protected network.Useful when combined with proxychains
 Command → ssh -D 1337 user@172.16.0.5 -fN
 ```
-Reverse Connection → Risky do not do it
+>Reverse Connection → Risky do not do it
 
 ## Plink.exe
 
@@ -54,7 +54,7 @@ we have  access → 172.16.0.5
 web server running → 172.16.0.10
 command → cmd.exe /c echo y | .\plink.exe -R 8000:172.16.0.10:80 kali@172.16.0.20 -i KEYFILE (id_rsa) -N
 ```
-Note → any keys generated with ssh-keygen will not work here we need to convert them using puttygen tool
+>Note → any keys generated with ssh-keygen will not work here we need to convert them using puttygen tool
 command → puttygen KEYFILE -o OUTPUT_KEY.ppk
 
 ## SOCAT
@@ -75,8 +75,8 @@ target server and port → 172.16.0.10:3306
 command → ./socat tcp-l:33060,fork,reuseaddr tcp:172.16.0.10:3306 &
 ```
 This opens up a port 33060 in compromised server and redirects the input from the attacking machine straight to the intended target server giving us access to the port 3306 (maybe MYSQL) running on th target.
-fork → fork in used to put every connection in to the new process
-reuseaddr → means that the port stays open after the connection is made to it.
+* fork → fork in used to put every connection in to the new process
+* reuseaddr → means that the port stays open after the connection is made to it.
 
 ### Forwarding Port Quiet ::
 Previous techinque opens up a port in compromised server which can be noisy and detectable
@@ -91,17 +91,17 @@ this makes connection between our listening port 8001 on the attacking machine a
 we could go localhost:8000 in our attacking machine web browser to load the webpage served by the target (172.16.0.10:80)
 
 What happens when we access the webpage in browser ::
-1) → The request goes to 127.0.0.1:8000
-2) → Due to socat listening on it anything goes in to 8000 comes out of port 8001
-3) → Port 8001 is connected to socat process of the compromised server where it gets relayed to the port 80 of the target server
+1. → The request goes to 127.0.0.1:8000
+1. → Due to socat listening on it anything goes in to 8000 comes out of port 8001
+1. → Port 8001 is connected to socat process of the compromised server where it gets relayed to the port 80 of the target server
 
 When target sends response :::
-1) the response is sent to the socat process on the compromised server.What goes in to the process comes out at the other side, which happens to link straight to port 8001 on our attacking machine
-2) Anything that goes in to port 8001 of out attacking machine comes out of 8000 on our attacking machine, which is where the webbrowser is expecting to receive the response.
+1. the response is sent to the socat process on the compromised server.What goes in to the process comes out at the other side, which happens to link straight to port 8001 on our attacking machine
+1. Anything that goes in to port 8001 of out attacking machine comes out of 8000 on our attacking machine, which is where the webbrowser is expecting to receive the response.
 
 TO close ::
-1) jobs
-2) kill %1
+1. jobs
+1. kill %1
 
 ## CHISEL
 It is a tool used to set up tunneling proxy or port forward through a compromised system regardless of whether we have ssh access or not.
@@ -150,8 +150,8 @@ attacking box → ./chisel client LISTEN_IP:LISTEN_PORT LOCAL_PORT:TARGET_IP:TAR
 It uses ssh connection to create a tunnelled proxy that acts like a new interface.It allows use to route our traffic through proxy without proxychains.
 
 cons::
-1) it only works on linux targets
-2) it requires access to the compromised server via ssh also python also needs to be installed on the server.
+1. it only works on linux targets
+1. it requires access to the compromised server via ssh also python also needs to be installed on the server.
 
 ```
 use → sshuttle -r user@address subnet
