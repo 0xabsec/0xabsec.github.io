@@ -79,11 +79,13 @@ reuseaddr → means that the port stays open after the connection is made to it.
 
 ### Forwarding Port Quiet ::
 Previous techinque opens up a port in compromised server which can be noisy and detectable
-
+``
 Attacking machine → socat tcp-l:8001 tcp-l:8000,fork,reuseaddr &
+```
 open up two port 8001 and 8000 creating a local port relay what goes in to one comes out into another. For this reason port 8000 has fork and reuseaddr to create more than one connection using the port forward
-
+```
 Compromised relay server (172.16.0.5) → ./socat tcp:Attacking_ip:8001 tcp:TARGET_IP(172.16.0.10):TARGET_PORT(80),fork &
+```
 this makes connection between our listening port 8001 on the attacking machine and open port of the target server.
 we could go localhost:8000 in our attacking machine web browser to load the webpage served by the target (172.16.0.10:80)
 
