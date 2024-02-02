@@ -12,3 +12,5 @@ _Notes_ _From_ _the_ _Underground_
 # [Event Logs With PowerShell](./pages/evt1.html)
 
 # [Proving Grounds End Of Year CTF 2023 (OFFSEC) PEN-200](./pages/offsec.html)
+
+# [Hack The Box POV (Medium)](./pages/pov.html)
