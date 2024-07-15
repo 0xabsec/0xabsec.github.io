@@ -2,8 +2,8 @@
 layout: default
 ---
 _Notes_ _From_ _the_ _Underground_
-# [Introduction to Windows Command Line (cmd)](./pages/cmd.html)
 
+# [Introduction to Windows Command Line (cmd)](./pages/cmd.html)
 
 # [Introduction to Windows Powershell](./pages/powershell.html)
 
@@ -14,3 +14,5 @@ _Notes_ _From_ _the_ _Underground_
 # [Proving Grounds End Of Year CTF 2023 (OFFSEC) PEN-200](./pages/offsec.html)
 
 # [Hack The Box POV (Medium)](./pages/pov.html)
+
+# [Windows Privilege Escalation Notes](./pages/windowsPriv.html)
