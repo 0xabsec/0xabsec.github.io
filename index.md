@@ -9,10 +9,13 @@ _Notes_ _From_ _the_ _Underground_
 
 # [Pivoting](./pages/pivot.html)
 
+# [Windows Privilege Escalation Notes](./pages/windowsPriv.html)
+
+# [File Transfers](./pages/filetransfer.html)
+
 # [Event Logs With PowerShell](./pages/evt1.html)
 
 # [Proving Grounds End Of Year CTF 2023 (OFFSEC) PEN-200](./pages/offsec.html)
 
 # [Hack The Box POV (Medium)](./pages/pov.html)
 
-# [Windows Privilege Escalation Notes](./pages/windowsPriv.html)

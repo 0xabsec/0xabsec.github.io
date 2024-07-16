@@ -41,35 +41,35 @@ Sysinternals Suite → We will use several tools from Sysinternals in our enumer
 Interface(s), IP Address(es), DNS Information
 
 ```
-C:\Users\htb-student> ipconfig /all
+C:\Users\> ipconfig /all
 ```
 ARP Table
 
 ```
-C:\Users\htb-student> arp -a
+C:\Users\> arp -a
 ```
 Routing Table
 
 ```
-C:\Users\htb-student> route print
+C:\Users\> route print
 ```
 #### Enumerating Protections
 
 Check Windows Defender Status
 
 ```
-PS C:\Users\htb-student> Get-MpComputerStatus
+PS C:\Users\> Get-MpComputerStatus
 ```
 List AppLocker Rules
 
 ```
-PS C:\Users\htb-student> Get-AppLockerPolicy -Effective | select -ExpandProperty RuleCollections
+PS C:\Users\> Get-AppLockerPolicy -Effective | select -ExpandProperty RuleCollections
 ```
 
 Test AppLocker Policy
 
 ```
-PS C:\Users\htb-student> Get-AppLockerPolicy -Local | Test-AppLockerPolicy -path C:\Windows\System32\cmd.exe -User Everyone
+PS C:\Users\> Get-AppLockerPolicy -Local | Test-AppLockerPolicy -path C:\Windows\System32\cmd.exe -User Everyone
 ```
 
 ### Initial Enumeration
@@ -89,14 +89,14 @@ PS C:\Users\htb-student> Get-AppLockerPolicy -Local | Test-AppLockerPolicy -path
 #### System Information
 
 ```
-C:\Users\htb-student> tasklist /svc
+C:\Users\> tasklist /svc
 ```
 **standard Windows processes**: Session Manager Subsystem (smss.exe), Client Server Runtime Subsystem (csrss.exe), WinLogon (winlogon.exe), Local Security Authority Subsystem Service (LSASS), and Service Host (svchost.exe)
 
 #### Display All Environment Variables
 
 ```
-C:\Users\htb-student> set
+C:\Users\> set
 ```
 > when running a program, Windows looks for that program in the CWD (Current Working Directory) first, then from the PATH going left to right
 
@@ -105,7 +105,7 @@ C:\Users\htb-student> set
 #### View Detailed Configuration Information
 
 ```
-C:\Users\htb-student> systeminfo
+C:\Users\> systeminfo
 ```
 
 > The System Boot Time and OS Version can also be checked to get an idea of the patch level
@@ -113,30 +113,30 @@ C:\Users\htb-student> systeminfo
 #### Patches and Updates
 
 ```
-C:\Users\htb-student> wmic qfe
+C:\Users\> wmic qfe
 ```
 
 ```
-PS C:\htb> Get-HotFix | ft -AutoSize
+PS C:\> Get-HotFix | ft -AutoSize
 ```
 > If systeminfo doesn't display hotfixes, they may be queriable with WMI using the WMI-Command binary with QFE (Quick Fix Engineering) to display patches
 
 #### Installed Programs
 
 ```
-C:\Users\htb-student> wmic product get name
+C:\Users\> wmic product get name
 ```
 
 ```
-PS C:\htb> Get-WmiObject -Class Win32_Product |  select Name, Version
+PS C:\> Get-WmiObject -Class Win32_Product |  select Name, Version
 ```
 
 #### Display Running Processes
 
 ```
-PS C:\htb> netstat -ano
+PS C:\> netstat -ano
 
-PS C:\htb> netstat -anoy
+PS C:\> netstat -anoy
 ```
 ```
 PS C:\Windows\system32> Get-Process -Id (Get-NetTCPConnection -LocalPort portnumber).OwningProcess             
@@ -147,42 +147,42 @@ PS C:\Windows\system32> Get-Process -Id (Get-NetTCPConnection -LocalPort portnum
 #### User & Group Information
 
 ```
-PS C:\Users\htb-student> query user
+PS C:\Users\> query user
 ```
 > Logged-In Users
 
 ```
-C:\Users\htb-student > echo %USERNAME%
+C:\Users\ > echo %USERNAME%
 ```
 > Current User
 
 ```
-C:\htb> whoami /priv
+C:\> whoami /priv
 ```
 > Current User Privileges
 
 ```
-PS C:\Users\htb-student> whoami /groups
+PS C:\Users\> whoami /groups
 ```
 > Current User Group Information
 
 ```
-PS C:\Users\htb-student> net user
+PS C:\Users\> net user
 ```
 > Get All Users
 
 ```
-PS C:\Users\htb-student> net localgroup
+PS C:\Users\> net localgroup
 ```
 > Get All Groups
 
 ```
-PS C:\Users\htb-student> net localgroup administrators
+PS C:\Users\> net localgroup administrators
 ```
 > Details About a Group
 
 ```
-PS C:\Users\htb-student> net accounts
+PS C:\Users\> net accounts
 ```
 > Get Password Policy
 
@@ -191,29 +191,29 @@ PS C:\Users\htb-student> net accounts
 #### Listing Named Pipes with Pipelist
 
 ```
-C:\htb> pipelist.exe /accepteula
+C:\> pipelist.exe /accepteula
 ```
 
 > Listing Named Pipes with PowerShell
 
 ```
-PS C:\htb>  gci  \\.\pipe\
+PS C:\>  gci  \\.\pipe\
 ```
 
 > Reviewing LSASS Named Pipe Permissions
 
 ```
-C:\htb> accesschk.exe /accepteula \\.\Pipe\lsass -v
+C:\> accesschk.exe /accepteula \\.\Pipe\lsass -v
 ```
 
 #### Named Pipes Attack Example
 
 ```
-C:\htb> accesschk.exe -w \pipe\* -v
+C:\> accesschk.exe -w \pipe\* -v
 ```
  
 > WindscribeService named pipe allows READ and WRITE access to the Everyone group, meaning all authenticated users.
 
 ```
-C:\htb> accesschk.exe -accepteula -w \pipe\WindscribeService -v
+C:\> accesschk.exe -accepteula -w \pipe\WindscribeService -v
 ```
