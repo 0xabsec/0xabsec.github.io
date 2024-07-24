@@ -48,7 +48,7 @@ Seding the Request in to the Repeater and changing the cv.pdf in index.aspx it g
 
 ![site](./htb/pics/8.png)
 
-Changing the file parameter from index.aspx to default.aspx it shows code of the page means the file parameter is vulnerable to file_read vulnerablity
+Changing the file parameter from index.aspx to default.aspx it shows code of the page means the file parameter is vulnerable to file_disclosure vulnerablity
 
 It also shows index.aspx.cs as a CodeFile
 
