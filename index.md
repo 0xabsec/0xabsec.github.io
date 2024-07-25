@@ -9,7 +9,7 @@ _Notes_ _From_ _the_ _Underground_
 
 # [Pivoting](./pages/pivot.html)
 
-# [Windows Privilege Escalation Notes](./pages/windowsPriv.html)
+# [Windows Privilege Escalation Notes (1)](./pages/windowsPriv1.html)
 
 # [File Transfers](./pages/filetransfer.html)
 
