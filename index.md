@@ -11,6 +11,8 @@ _Notes_ _From_ _the_ _Underground_
 
 # [Windows Privilege Escalation Notes (1)](./pages/windowsPriv1.html)
 
+# [Windows Privilege Escalation Notes (2)](./pages/windowsPriv2.html)
+
 # [File Transfers](./pages/filetransfer.html)
 
 # [Event Logs With PowerShell](./pages/evt1.html)
