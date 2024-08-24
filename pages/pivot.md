@@ -12,6 +12,7 @@ Two Main method to do pivioting ;:
 Proxy is good if we want to redirect lots of different kind of traffic into our target network (example nmap scan)
 Port forwading is faster and reliable but only allows us to access single port on a target device
 
+* * *
 
 ## Ligolo-ng 
 
@@ -62,12 +63,15 @@ On ligolo interface we can select the ligolo session after running **session**  
 [Agent : machine\user@dc1] >> start
 ```
 
+* * *
 
 ## ProxyChains,FoxyProxy
 
 In /etc/proxychains.conf comment out the proxy_dns line which can cause a scan to hang and ultimately crash
 * We can only use TCP scans -- so no UDP or SYN scans. ICMP echo packets will also not work through the proxy, so use -Pn switch
 * It will be extremely slow. 
+
+* * *
 
 ## SSH Tunneling
 
@@ -92,6 +96,8 @@ Command → ssh -D 1337 user@172.16.0.5 -fN
 ```
 >Reverse Connection → Risky do not do it
 
+* * *
+
 ## Plink.exe
 
 It is a windows command line version of the PUTTY ssh client . Now windows comes with its own ssh client.
@@ -107,6 +113,8 @@ command → cmd.exe /c echo y | .\plink.exe -R 8000:172.16.0.10:80 kali@172.16.0
 ```
 >Note → any keys generated with ssh-keygen will not work here we need to convert them using puttygen tool
 command → puttygen KEYFILE -o OUTPUT_KEY.ppk
+
+* * *
 
 ## SOCAT
 ### Reverse shell Relay ::
@@ -154,6 +162,8 @@ TO close ::
 1. jobs
 1. kill %1
 
+* * *
+
 ## CHISEL
 It is a tool used to set up tunneling proxy or port forward through a compromised system regardless of whether we have ssh access or not.
 It has two modules ;:
@@ -197,6 +207,8 @@ It is where we connect from our own attacking machine to a chisel server listeni
 Compromised target → ./chisel server -p LISTEN_PORT 
 attacking box → ./chisel client LISTEN_IP:LISTEN_PORT LOCAL_PORT:TARGET_IP:TARGET_PORT
 ```
+* * *
+
 ## SSHUTTLE 
 It uses ssh connection to create a tunnelled proxy that acts like a new interface.It allows use to route our traffic through proxy without proxychains.
 
@@ -219,4 +231,5 @@ When encountering "client: fatal: server died with error code 255" error ::
 use → sshuttle -r user@172.16.0.5 172.16.0.0/24 -x 172.16.0.5
 -x → to exclude
 ```
+* * *
 

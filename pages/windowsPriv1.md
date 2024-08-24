@@ -32,6 +32,8 @@ Sysinternals Suite → We will use several tools from Sysinternals in our enumer
 
 > Note: Depending on how we gain access to a system we may not have many directories that are writeable by our user to upload tools. It is always a safe bet to upload tools to C:\Windows\Temp because the BUILTIN\Users group has write access.
 
+* * *
+
 ## Getting lay of the Land
 
 ### **Situational Awareness**
@@ -217,6 +219,8 @@ C:\> accesschk.exe -w \pipe\* -v
 ```
 C:\> accesschk.exe -accepteula -w \pipe\WindscribeService -v
 ```
+
+* * *
 
 ## Windows Group Privileges
 
@@ -434,6 +438,8 @@ Once we Are member of Admin Group We can dump hashes of admin
 ```
 attacker@ubuntu[/]$  secretsdump.py <user>@<ip> -just-dc-user administrator
 ``` 
+
+* * *
 
 ## Attacking the OS
 

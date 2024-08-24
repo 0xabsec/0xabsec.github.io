@@ -15,6 +15,8 @@ _Notes_ _From_ _the_ _Underground_
 
 # [File Transfers](./pages/filetransfer.html)
 
+# [Active Directory Enumeration and Attacks Notes](./pages/ActiveDirectory.html)
+
 # [Event Logs With PowerShell](./pages/evt1.html)
 
 # [Proving Grounds End Of Year CTF 2023 (OFFSEC) PEN-200](./pages/offsec.html)

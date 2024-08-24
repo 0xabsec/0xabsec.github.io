@@ -3,6 +3,8 @@ layout: default
 ---
 >> [cheat Sheet](https://swisskyrepo.github.io/InternalAllTheThings/redteam/escalation/windows-privilege-escalation/)
 
+* * *
+
 ## Credential Theft
 
 We may find credentials during our privilege escalation enumeration that can lead directly to local admin access, grant us a foothold into the Active Directory domain environment, or even be used to escalate privileges within the domain
@@ -178,6 +180,7 @@ PS C:\> Invoke-SqliteQuery -Database $db -Query "SELECT Text FROM Note" | ft -wr
 C:\ProgramData\Configs\*
 C:\Program Files\Windows PowerShell\*
 ```
+* * *
 
 ## Additional Techniques
 

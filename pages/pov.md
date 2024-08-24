@@ -38,6 +38,8 @@ Looking in to the site we can see there is a download button to Download Stephen
 
 ![site](./htb/pics/6.png)
 
+* * *
+
 ### User Sfitz
 
 Intercepting the Download Request through burp it looks something like this with the file parameter as cv.pdf 
@@ -92,6 +94,8 @@ Using whoami we can see we go the shell as sfitz user
 
 ![site](./htb/pics/18.png)
 
+* * *
+
 ### User alaading
 
 Starting Recon of the Box as Sftiz we can see there is another user on the box as alaading
@@ -141,6 +145,8 @@ We can grab the user.txt
 
 ![site](./htb/pics/31.png)
 
+* * *
+
 ### Privilege Escalation To System
 
 whoami /priv shows us that the use alaading has SeDebugPrivilege Enabled
@@ -176,4 +182,6 @@ copying payload to the Box and Starting our nc listener we can use the powershel
 We Get the shell back as nt authority/system now we can grab the flag
 
 ![site](./htb/pics/39.png)
+
+* * *
 

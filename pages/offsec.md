@@ -53,6 +53,8 @@ After few seconds we got a shell as Root
 
 ![root2](./ctf/ctf-1/8.png)
 
+* * *
+
 # CTF-02
 
 ## RECON
@@ -136,6 +138,8 @@ we can run fileS binary as root and since it has -exec option to run commands we
 
 ![site](./ctf/ctf-2/15.png)
 
+* * *
+
 # CTF-04
 
 ## RECON 
@@ -161,6 +165,8 @@ Starting the nc listener and Running The expolit we got the shell as root
 ![rce2](./ctf/ctf-4/4.png)
 
 ![shell](./ctf/ctf-4/5.png)
+
+* * *
 
 # CTF-05
 
@@ -202,6 +208,8 @@ Got the shell back as Root
 
 ![Root](./ctf/ctf-5/8.png)
 
+* * *
+
 # CTF-06
 
 ## REcon
@@ -233,6 +241,8 @@ Testing For command injection in cpu_profile format parameter we got the callbac
 Putting bash rev shell in it we got the shell as root
 
 ![root](./ctf/ctf-6/3.png)
+
+* * *
 
 # CTF-07
 
@@ -303,6 +313,7 @@ We got the shell back as root
 
 ![root4](./ctf/ctf-7/12.png)
 
+* * *
 
 # CTF-08
 
@@ -360,4 +371,6 @@ and since it is owned by Confluence user and we can write in it we can put a bas
 Starting our nc listener we got the shell back as root after few seconds
 
 ![root](./ctf/ctf-8/11.png)
+
+* * *
 
