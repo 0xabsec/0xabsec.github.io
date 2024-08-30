@@ -6,7 +6,10 @@ layout: default
 
 # Tools
 
+* * *
+
 [PowerView](https://github.com/PowerShellMafia/PowerSploit/blob/master/Recon/PowerView.ps1)/[SharpView](https://github.com/dmchell/SharpView)  A PowerShell tool and a .NET port of the same used to gain situational awareness in AD. These tools can be used as replacements for various Windows `net*` commands and more. PowerView and SharpView can help us gather much of the data that BloodHound does, but it requires more work to make meaningful relationships among all of the data points. These tools are great for checking what additional access we may have with a new set of credentials, targeting specific users or computers, or finding some "quick wins" such as users that can be attacked via Kerberoasting or ASREPRoasting.   
+[**Powerview Tips and Tricks**](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993#file-powerview-3-0-tricks-ps1)
 
 [BloodHound](https://github.com/BloodHoundAD/BloodHound)  Used to visually map out AD relationships and help plan attack paths that may otherwise go unnoticed. Uses the [SharpHound](https://github.com/BloodHoundAD/BloodHound/tree/master/Ingestors) PowerShell or C# ingestor to gather data to later be imported into the BloodHound JavaScript (Electron) application with a [Neo4j](https://github.com/BloodHoundAD/BloodHound/tree/master/Ingestors) database for graphical analysis of the AD environment.   
 
@@ -102,6 +105,8 @@ layout: default
 
 ## Initial Enumeration
 
+* * *
+
 ```
 nslookup abc.com
 ```
@@ -161,6 +166,8 @@ sudo mv kerbrute_linux_amd64 /usr/local/bin/kerbrute
 
 ## LLMNR/NTB-NS Poisoning
 
+* * *
+
 ```
 responder -h
 ```
@@ -199,6 +206,8 @@ $regkey = "HKLM:SYSTEM\CurrentControlSet\services\NetBT\Parameters\Interfaces" G
 * * *
 
 ## Password Spraying & Password Policies 
+
+* * *
 
 ```
 crackmapexec smb 10.10.10.10 -u test -p Password123 --pass-pol
@@ -311,6 +320,8 @@ Invoke-DomainPasswordSpray -Password <pass> -OutFile spray_success -ErrorAction 
 
 ## Enumerating Security Controls
 
+* * *
+
 ```
 Get-MpComputerStatus
 ``` 	
@@ -344,6 +355,8 @@ Get-LAPSComputers
 * * *
 
 ## Credentialed Enumeration
+
+* * *
 
 ```
 xfreerdp /u:<user>@<domain> /p:<pass> /v:<ip>
@@ -423,6 +436,213 @@ python3 windapsearch.py --dc-ip <ip> -u <domain>\<username> -p <pass> -PU
 ```
 sudo bloodhound-python -u '<user>' -p '<pass>' -ns <ns-ip> -d <domain> -c all
 ``` 	
-> Executes the python implementation of BloodHound (bloodhound.py) with valid credentials and specifies a name server (-ns) and target Windows domain (inlanefreight.local) as well as runs all checks (-c all). Runs using valid credentials. Performed from a Linux-based host.
+> Executes the python implementation of BloodHound (bloodhound.py) with valid credentials and specifies a name server (-ns) and target Windows domain  as well as runs all checks (-c all). Runs using valid credentials. Performed from a Linux-based host.
+
+* * *
+
+## Enumeration by Living Off the Land
+
+* * *
+
+```
+Get-Module
+```
+> PowerShell cmd-let used to list all available modules, their version and command options from a Windows-based host.
+
+```
+Import-Module ActiveDirectory
+```
+> Loads the Active Directory PowerShell module from a Windows-based host.
+
+```
+Get-ADDomain
+```
+> PowerShell cmd-let used to gather Windows domain information from a Windows-based host.
+
+```
+Get-ADUser -Filter {ServicePrincipalName -ne "$null"} -Properties ServicePrincipalName 	
+```
+>PowerShell cmd-let used to enumerate user accounts on a target Windows domain and filter by ServicePrincipalName. Performed from a Windows-based host.
+
+```
+Get-ADTrust -Filter * 	
+```
+> PowerShell cmd-let used to enumerate any trust relationships in a target Windows domain and filters by any (-Filter *). Performed from a Windows-based host.
+
+```
+Get-ADGroup -Filter * | select name
+```
+> PowerShell cmd-let used to enumerate groups in a target Windows domain and filters by the name of the group (select name). Performed from a Windows-based host.
+
+```
+Get-ADGroup -Identity "Backup Operators"
+``` 	
+> PowerShell cmd-let used to search for a specifc group (-Identity "Backup Operators"). Performed from a Windows-based host.
+
+```
+Get-ADGroupMember -Identity "Backup Operators"
+```
+> PowerShell cmd-let used to discover the members of a specific group (-Identity "Backup Operators"). Performed from a Windows-based host.
+
+```
+Export-PowerViewCSV
+``` 	
+> PowerView script used to append results to a CSV file. Performed from a Windows-based host.
+
+```
+ConvertTo-SID
+``` 	
+> PowerView script used to convert a User or Group name to it's SID. Performed from a Windows-based host.
+
+```
+Get-DomainSPNTicket
+```
+> PowerView script used to request the kerberos ticket for a specified service principal name (SPN). Performed from a Windows-based host.
+
+```
+Get-Domain
+``` 	
+> PowerView script used tol return the AD object for the current (or specified) domain. Performed from a Windows-based host.
+
+```
+Get-DomainController
+``` 	
+> PowerView script used to return a list of the target domain controllers for the specified target domain. Performed from a Windows-based host.
+
+```
+Get-DomainUser
+``` 	
+
+> PowerView script used to return all users or specific user objects in AD. Performed from a Windows-based host.
+
+```
+Get-DomainComputer
+``` 	
+> PowerView script used to return all computers or specific computer objects in AD. Performed from a Windows-based host.
+
+```
+Get-DomainGroup
+```
+> PowerView script used to eturn all groups or specific group objects in AD. Performed from a Windows-based host.
+
+```
+Get-DomainOU
+``` 	
+> PowerView script used to search for all or specific OU objects in AD. Performed from a Windows-based host.
+
+```
+Find-InterestingDomainAcl
+``` 	
+> PowerView script used to find object ACLs in the domain with modification rights set to non-built in objects. Performed from a Windows-based host.
+
+```
+Get-DomainGroupMember
+``` 	
+> PowerView script used to return the members of a specific domain group. Performed from a Windows-based host.
+
+```
+Get-DomainFileServer
+``` 	
+> PowerView script used to return a list of servers likely functioning as file servers. Performed from a Windows-based host.
+
+```
+Get-DomainDFSShare
+``` 	
+> PowerView script used to return a list of all distributed file systems for the current (or specified) domain. Performed from a Windows-based host.
+
+```
+Get-DomainGPO
+``` 	
+> PowerView script used to return all GPOs or specific GPO objects in AD. Performed from a Windows-based host.
+
+```
+Get-DomainPolicy
+``` 	
+> PowerView script used to return the default domain policy or the domain controller policy for the current domain. Performed from a Windows-based host.
+
+```
+Get-NetLocalGroup
+``` 	
+> PowerView script used to enumerate local groups on a local or remote machine. Performed from a Windows-based host.
+
+```
+Get-NetLocalGroupMember
+``` 	
+> PowerView script enumerate members of a specific local group. Performed from a Windows-based host.
+
+```
+Get-NetShare
+``` 	
+> PowerView script used to return a list of open shares on a local (or a remote) machine. Performed from a Windows-based host.
+
+```
+Get-NetSession
+``` 	
+> PowerView script used to return session information for the local (or a remote) machine. Performed from a Windows-based host.
+
+```
+Test-AdminAccess
+```
+> PowerView script used to test if the current user has administrative access to the local (or a remote) machine. Performed from a Windows-based host.
+
+```
+Find-DomainUserLocation
+``` 
+> PowerView script used to find machines where specific users are logged into. Performed from a Windows-based host.
+
+```
+Find-DomainShare
+``` 	
+> PowerView script used to find reachable shares on domain machines. Performed from a Windows-based host.
+
+```
+Find-InterestingDomainShareFile
+``` 	
+> PowerView script that searches for files matching specific criteria on readable shares in the domain. Performed from a Windows-based host.
+
+```
+Find-LocalAdminAccess
+``` 	
+> PowerView script used to find machines on the local domain where the current user has local administrator access Performed from a Windows-based host.
+
+```
+Get-DomainTrust
+``` 	
+> PowerView script that returns domain trusts for the current domain or a specified domain. Performed from a Windows-based host.
+
+```
+Get-ForestTrust
+``` 	
+> PowerView script that returns all forest trusts for the current forest or a specified forest. Performed from a Windows-based host.
+
+```
+Get-DomainForeignUser
+``` 	
+> PowerView script that enumerates users who are in groups outside of the user's domain. Performed from a Windows-based host.
+
+```
+Get-DomainForeignGroupMember
+``` 	
+> PowerView script that enumerates groups with users outside of the group's domain and returns each foreign member. Performed from a Windows-based host.
+
+```
+Get-DomainTrustMapping
+``` 	
+> PowerView script that enumerates all trusts for current domain and any others seen. Performed from a Windows-based host.
+
+```
+Get-DomainGroupMember -Identity "Domain Admins" -Recurse
+``` 	
+> PowerView script used to list all the members of a target group ("Domain Admins") through the use of the recurse option (-Recurse). Performed from a Windows-based host.
+
+```
+Get-DomainUser -SPN -Properties samaccountname,ServicePrincipalName
+``` 	
+> PowerView script used to find users on the target Windows domain that have the Service Principal Name set. Performed from a Windows-based host.
+
+```
+.\Snaffler.exe -d <domain> -s -v data
+``` 	
+>Runs a tool called Snaffler against a target Windows domain that finds various kinds of data in shares that the compromised account has access to. Performed from a Windows-based host.
 
 * * *
