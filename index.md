@@ -7,6 +7,8 @@ _Notes_ _From_ _the_ _Underground_
 
 # [Introduction to Windows Powershell](./pages/powershell.html)
 
+# [Code Execution via Windows Library Files (Client Side Attack)](./pages/csa.html)
+
 # [Pivoting](./pages/pivot.html)
 
 # [Windows Privilege Escalation Notes (1)](./pages/windowsPriv1.html)
